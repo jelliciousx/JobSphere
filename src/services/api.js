@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+const isProduction = window.location.hostname !== 'localhost';
+
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: isProduction 
+    ? 'https://jobsphere-backend-nr7w3492k-ctrlfreaks1.vercel.app/api'
+    : 'http://localhost:5000/api',
 });
 
 api.interceptors.request.use((config) => {
