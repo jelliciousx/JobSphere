@@ -19,21 +19,39 @@ connectDB();
 
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+// CORS - Local + Production
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://jobsphereofficial.netlify.app/'
+  ],
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(morgan('dev'));
 
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/messages', messageRoutes);
 
+// Health check
 app.get('/api/health', (req, res) => res.json({ status: 'OK' }));
 
+// Error handler
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// Local development
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+// Vercel export
+export default app;
