@@ -19,11 +19,11 @@ connectDB();
 
 const app = express();
 
-// CORS - Local + Production
+// ✅ FIXED CORS - no trailing slash
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://jobsphereofficial.netlify.app/'
+    'https://jobsphereofficial.netlify.app'  // ← / hata diya
   ],
   credentials: true
 }));
@@ -39,6 +39,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/messages', messageRoutes);
+
+// ✅ ADDED: Root route
+app.get('/', (req, res) => {
+  res.json({ message: 'JobSphere API is running!', status: 'OK' });
+});
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'OK' }));
